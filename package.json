@@ -8,10 +8,11 @@
   "license": "MIT",
   "scripts": {
     "start": "serve .",
-    "zip": "bestzip build.zip index.html assets/"
+    "zip": "bestzip build.zip index.html assets/ && sized build.zip"
   },
   "devDependencies": {
     "bestzip": "^2.1.6",
-    "serve": "^11.3.2"
+    "serve": "^11.3.2",
+    "sized": "^2.0.1"
   }
 }
