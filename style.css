@@ -1,11 +1,17 @@
 body {
   margin: 0;
-  padding: 45px;
+  padding: 10px;
   background: #fff;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
     "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
     "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
+}
+
+@media (min-width: 600px) {
+  body {
+    padding: 45px;
+  }
 }
 
 .path {
@@ -81,3 +87,6 @@ svg {
   content: url("images/image.svg");
 }
 
+.image-preview {
+  max-width: 100%;
+}
