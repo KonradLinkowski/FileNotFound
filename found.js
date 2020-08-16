@@ -10,6 +10,12 @@
 
   const fileTypes = ['folder', 'file', 'image']
 
+  const exts = {
+    folder: '',
+    file: '.txt',
+    image: '.png'
+  }
+
   const hashString = str => str.split('').reduce((hash, char) => (((hash << 5) - hash) + char.charCodeAt(0)) | 0, 0)
 
   const changeView = view => {
@@ -43,7 +49,7 @@
     $file.classList.add('item')
     const $a = document.createElement('a')
     $a.classList.add('link', type)
-    $a.textContent = name
+    $a.textContent = name + exts[type]
     $file.appendChild($a)
     $a.href = generateFileLink(name)
     return $file
@@ -145,11 +151,13 @@
     }
 
     parts.forEach((name, i) => {
+      const type = getFileType(name)
+      const ext = exts[type] || '/'
       const $a = document.createElement('a')
       const href = '#' + parts.slice(0, i + 1).join('/')
       $a.classList.add('link')
       $a.href = href
-      $a.textContent = name + '/'
+      $a.textContent = name + ext
       $path.appendChild($a)
     })
   }
