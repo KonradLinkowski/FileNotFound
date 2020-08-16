@@ -74,5 +74,10 @@ svg {
 }
 
 .file::before {
-  content: url("images/folder.svg");
+  content: url("images/file.svg");
 }
+
+.image::before {
+  content: url("images/image.svg");
+}
+
