@@ -10,6 +10,16 @@
 
   const fileTypes = ['folder', 'file', 'image']
 
+  const predefined = {
+    files: {
+      readme: `
+        I need your help - my computer seems to be broken.
+        When I try to do something I'm getting the FileNotFound error.
+        Your task is to find the file that doesn't exist.
+      `
+    }
+  }
+
   const exts = {
     folder: '',
     file: '.txt',
@@ -33,6 +43,14 @@
   }
 
   const getFileType = name => {
+    if (['main'].includes(name)) {
+      return 'folder'
+    }
+
+    if (['readme'].includes(name)) {
+      return 'file'
+    }
+
     const hash = Math.abs(hashString(name))
     const type = fileTypes[hash % 3]
     return type
@@ -85,21 +103,33 @@
     renderFolder(sortedFiles)
   }
 
+  const showRoot = () => {
+    const files = [{
+      name: 'main',
+      type: 'folder'
+    }, {
+      name: 'readme',
+      type: 'file'
+    }]
+
+    renderFolder(files)
+  }
+
   const renderFile = text => {
     $file.textContent = text
   }
 
   const generateFile = name => {
+    if (name in predefined.files) {
+      renderFile(predefined.files[name])
+      return
+    }
+
     const hash = Math.abs(hashString(name))
-
     const random = new Math.seedrandom(hash)
-
     const wordCount = random() * 500 + 100 | 0
-    
     const words = Array(wordCount).fill(0).map(() => randomString(random, 3, 20))
-
     const text = words.join(' ')
-
     renderFile(text)
   }
 
@@ -166,7 +196,7 @@
     updatePath()
     const thisFileName = window.location.hash.split('/').slice(-1)[0]
     if (thisFileName === '') {
-      generateFolder()
+      showRoot()
       changeView('folder')
       return
     }
