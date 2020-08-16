@@ -1,0 +1,17 @@
+{
+  "name": "filenotfound",
+  "version": "1.0.0",
+  "description": "Lightweight JavaScript game",
+  "main": "index.html",
+  "repository": "https://github.com/KonradLinkowski/FileNotFound",
+  "author": "Konrad Linkowski",
+  "license": "MIT",
+  "scripts": {
+    "start": "serve .",
+    "zip": "bestzip build.zip index.html assets/"
+  },
+  "devDependencies": {
+    "bestzip": "^2.1.6",
+    "serve": "^11.3.2"
+  }
+}
