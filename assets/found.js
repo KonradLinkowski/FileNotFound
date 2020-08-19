@@ -3,6 +3,7 @@
   const $folderView = document.querySelector('#folder-view')
   const $fileView = document.querySelector('#file-view')
   const $imageView = document.querySelector('#image-view')
+  const $notfoundView = document.querySelector('#notfound-view')
 
   const $files = document.querySelector('#files')
   const $image = document.querySelector('#image')
@@ -32,6 +33,7 @@
     $folderView.hidden = view !== 'folder'
     $fileView.hidden = view !== 'file'
     $imageView.hidden = view !== 'image'
+    $notfoundView.hidden = view !== 'notfound'
   }
 
   const randomString = (random, minLength = 1, maxLength = 15) => {
@@ -202,6 +204,14 @@
     }
 
     const thisFileType = getFileType(thisFileName)
+
+    console.log(hashString(window.location.hash))
+
+    const isNotFound = hashString(window.location.hash) === 2057588554 // :)
+    if (isNotFound) {
+      changeView('notfound')
+      return
+    }
     
     const typeMachine = {
       folder: generateFolder,
