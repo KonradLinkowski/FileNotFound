@@ -4,6 +4,9 @@
   const $fileView = document.querySelector('#file-view')
   const $imageView = document.querySelector('#image-view')
   const $notfoundView = document.querySelector('#notfound-view')
+  const $glitch = document.querySelector('#glitch')
+  const glitchCtx = $glitch.getContext('2d')
+  let glitchInterval = null
 
   const $files = document.querySelector('#files')
   const $image = document.querySelector('#image')
@@ -17,8 +20,10 @@
     files: {
       readme: `
         I need your help - my computer seems to be broken.
-        When I try to do something I'm getting the FileNotFound error.
+        When I try to do anything I'm getting the FileNotFound error and everything glitches.
         Your task is to find the file that doesn't exist.
+        Glitch effect intensifies when you are getting closer.
+        Look around for easter eggs.
       `
     },
     images: {
@@ -28,6 +33,15 @@
       3617: new Path2D('M10 10 h 80 v 80 h -80 Z'),
       132845411: new Path2D('M10 10 h 80 v 80 h -80 Z'),
       110: new Path2D('M10 10 h 80 v 80 h -80 Z')
+    },
+    glitch: {
+      '1048769573': 0.8,
+      '-1992680255': 0.7,
+      '589690535': 0.6,
+      '-243077372': 0.5,
+      '-1669118946': 0.4,
+      '1660893052': 0.3,
+      '1431115383': 0.1
     }
   }
 
@@ -232,6 +246,24 @@
     renderImage($canvas.toDataURL(), name)
   }
 
+  const glitch = () => {
+    const hash = hashString(window.location.hash)
+    const factor = predefined.glitch[hash] || 0.9
+
+    if (Math.random() < factor) {
+      return
+    }
+    glitchCtx.fillStyle = `hsl(${Math.random() * 360 | 0}, ${50}%, ${50}%)`
+    const x = Math.random() * $glitch.width | 0
+    const y = Math.random() * $glitch.height | 0
+    const w = Math.random() * ($glitch.width - x) | 0
+    const h = Math.random() * ($glitch.height - y) | 0
+    glitchCtx.fillRect(x, y, w, h)
+    setTimeout(() => {
+      glitchCtx.clearRect(0, 0, $glitch.width, $glitch.height)
+    }, 50)
+  }
+
   const updatePath = () => {
     const hash = window.location.hash.slice(1)
     if (!hash.match(/^\/[a-z]*(\/[a-z]+)*$/)) {
@@ -263,6 +295,11 @@
 
   const onHashChange = () => {
     updatePath()
+
+    if (glitchInterval) {
+      clearInterval(glitchInterval)
+    }
+
     const thisFileName = window.location.hash.split('/').slice(-1)[0]
     if (thisFileName === '') {
       showRoot()
@@ -277,7 +314,8 @@
     }
 
     const thisFileType = getFileType(thisFileName)
-
+    
+    glitchInterval = setInterval(glitch, 100)
     const isNotFound = hashString(window.location.hash) === 1431115383 // :)
     if (isNotFound) {
       addToFound(thisFileName, window.location.hash)
@@ -296,6 +334,14 @@
   }
 
   window.addEventListener('hashchange', onHashChange)
+
+  const resizeGlitch = () => {
+    $glitch.width = window.innerWidth
+    $glitch.height = window.innerHeight
+  }
+
+  window.addEventListener('resize', resizeGlitch)
+  resizeGlitch()
 
   onHashChange()
 })()
