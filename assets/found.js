@@ -18,6 +18,14 @@
         When I try to do something I'm getting the FileNotFound error.
         Your task is to find the file that doesn't exist.
       `
+    },
+    images: {
+      39668021: new Path2D('M 320 260 Q 220 20 400 240 Q 560 20 460 260 Q 760 300 460 340 Q 580 580 400 380 Q 300 600 320 360 Q 40 360 320 260 L 400 240 L 460 260 L 460 340 L 400 380 L 320 360 Z'),
+      535261415: new Path2D('M10 10 h 80 v 80 h -80 Z'),
+      1746917462: new Path2D('M10 10 h 80 v 80 h -80 Z'),
+      3617: new Path2D('M10 10 h 80 v 80 h -80 Z'),
+      132845411: new Path2D('M10 10 h 80 v 80 h -80 Z'),
+      110: new Path2D('M10 10 h 80 v 80 h -80 Z')
     }
   }
 
@@ -147,19 +155,38 @@
     const ctx = $canvas.getContext('2d')
 
     const hash = Math.abs(hashString(name))
+
     const random = new Math.seedrandom(hash)
 
-    const figureCount = random() * 30 + 5 | 0
-
-    for (let i = 0; i < figureCount; i += 1) {
-      const color = `hsl(${random() * 360 | 0}, ${50}%, ${50}%)`
-      ctx.fillStyle = color
-      const x = random() * 500 | 0
-      const y = random() * 500 | 0
-      const w = random() * 50 + 5 | 0
-      const h = random() * 50 + 5 | 0
-  
-      ctx.fillRect(x, y, w, h)
+    const getColor = () => `hsl(${random() * 360 | 0}, ${50}%, ${50}%)`
+    
+    if (hash in predefined.images) {
+      ctx.strokeStyle = getColor()
+      ctx.stroke(predefined.images[hash])
+    } else {
+      const figureCount = random() * 30 + 5 | 0
+      for (let i = 0; i < figureCount; i += 1) {
+        ctx.beginPath()
+        const color = getColor()
+        ctx.fillStyle = color
+        ctx.strokeStyle = color
+        const x = random() * 500 | 0
+        const y = random() * 500 | 0
+        if (random() < 0.5) {
+          const w = random() * 50 + 5 | 0
+          const h = random() * 50 + 5 | 0
+          ctx.rect(x, y, w, h)
+        } else {
+          const r = random() * 50 + 5 | 0
+          ctx.arc(x, y, r, 0, Math.PI * 2)
+        }
+        if (random() < 0.5) {
+          ctx.fill()
+        } else {
+          ctx.stroke()
+        }
+        ctx.closePath()
+      }
     }
 
     renderImage($canvas.toDataURL(), name)
@@ -205,9 +232,7 @@
 
     const thisFileType = getFileType(thisFileName)
 
-    console.log(hashString(window.location.hash))
-
-    const isNotFound = hashString(window.location.hash) === 2057588554 // :)
+    const isNotFound = hashString(window.location.hash) === 1431115383 // :)
     if (isNotFound) {
       changeView('notfound')
       return
