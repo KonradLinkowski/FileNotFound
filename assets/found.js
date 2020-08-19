@@ -11,6 +11,8 @@
 
   const fileTypes = ['folder', 'file', 'image']
 
+  const storageKey = 'filenotfound-found'
+
   const predefined = {
     files: {
       readme: `
@@ -30,7 +32,6 @@
   }
 
   const exts = {
-    folder: '',
     file: '.txt',
     image: '.png'
   }
@@ -50,6 +51,27 @@
     const end = 'z'.charCodeAt(0)
     const name = Array(length).fill(0).map(() => String.fromCharCode(Math.floor(random() * (end - start)) + start)).join('')
     return name
+  }
+
+  const addToFound = (name, path) => {
+    const found = JSON.parse(localStorage.getItem(storageKey) || '[]')
+    if (found.find(f => f.path === path)) {
+      return
+    }
+    found.push({ name, path })
+    localStorage.setItem(storageKey, JSON.stringify(found))
+  }
+
+  const getFound = () => {
+    try {
+      const found = JSON.parse(localStorage.getItem(storageKey))
+      return found
+    } catch (e) {
+      console.error(e)
+      localStorage.removeItem(storageKey)
+      window.location.hash = ''
+    }
+    return []
   }
 
   const getFileType = name => {
@@ -72,14 +94,14 @@
     return '#/' + parts.join('/')
   }
 
-  const createFile = (name, type) => {
+  const createFile = (name, type, path = null) => {
     const $file = document.createElement('li')
     $file.classList.add('item')
     const $a = document.createElement('a')
     $a.classList.add('link', type)
-    $a.textContent = name + exts[type]
+    $a.textContent = name + (exts[type] || '')
     $file.appendChild($a)
-    $a.href = generateFileLink(name)
+    $a.href = path || generateFileLink(name)
     return $file
   }
 
@@ -88,8 +110,8 @@
       $files.removeChild($files.firstChild)
     }
 
-    files.forEach(({ name, type }) => {
-      const $f = createFile(name, type)
+    files.forEach(({ name, type, path }) => {
+      const $f = createFile(name, type, path)
       $files.appendChild($f)
     })
   }
@@ -120,7 +142,24 @@
     }, {
       name: 'readme',
       type: 'file'
-    }]
+    }, localStorage.getItem(storageKey)
+      ? {
+        name: 'found',
+        type: 'folder'
+      }
+      : null
+    ].filter(f => f)
+
+    renderFolder(files)
+  }
+
+  const showFound = () => {
+    const found = getFound()
+    const files = found.map(({ name, path }) => ({
+      name,
+      path,
+      type: 'flink'
+    }))
 
     renderFolder(files)
   }
@@ -163,6 +202,7 @@
     if (hash in predefined.images) {
       ctx.strokeStyle = getColor()
       ctx.stroke(predefined.images[hash])
+      addToFound(name, window.location.hash)
     } else {
       const figureCount = random() * 30 + 5 | 0
       for (let i = 0; i < figureCount; i += 1) {
@@ -230,10 +270,17 @@
       return
     }
 
+    if (thisFileName === 'found') {
+      showFound()
+      changeView('folder')
+      return
+    }
+
     const thisFileType = getFileType(thisFileName)
 
     const isNotFound = hashString(window.location.hash) === 1431115383 // :)
     if (isNotFound) {
+      addToFound(thisFileName, window.location.hash)
       changeView('notfound')
       return
     }

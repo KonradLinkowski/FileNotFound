@@ -87,6 +87,10 @@ svg {
   content: url("images/image.svg");
 }
 
+.flink::before {
+  content: url("images/link.svg");
+}
+
 .image-preview {
   max-width: 100%;
 }
