@@ -256,9 +256,9 @@
     glitchCtx.fillStyle = `hsl(${Math.random() * 360 | 0}, ${50}%, ${50}%)`
     const x = Math.random() * $glitch.width | 0
     const y = Math.random() * $glitch.height | 0
-    const w = Math.random() * ($glitch.width - x) | 0
-    const h = Math.random() * ($glitch.height - y) | 0
-    glitchCtx.fillRect(x, y, w, h)
+    const w = Math.random() * $glitch.width | 0
+    const h = Math.random() * $glitch.height | 0
+    glitchCtx.fillRect(x - w / 2, y - h / 2, w, h)
     setTimeout(() => {
       glitchCtx.clearRect(0, 0, $glitch.width, $glitch.height)
     }, 50)
