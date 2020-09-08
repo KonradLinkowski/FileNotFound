@@ -102,3 +102,20 @@ svg {
   display: block;
   pointer-events: none;
 }
+
+.not-found {
+  background: black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  height: 400px;
+  color: white;
+  font-size: 4rem;
+
+}
+
+.canvas {
+  position: absolute;
+}
