@@ -118,4 +118,5 @@ svg {
 
 .canvas {
   position: absolute;
+  pointer-events: none;
 }
